@@ -24,9 +24,6 @@ FROM nginx:1.23-alpine
 # nginx default 접근 파일 설정
 WORKDIR /usr/share/nginx/html
 
-# 기존 도커 컨테이너 삭제
-RUN rm -rf *
-
 # nginx 디렉토리에 리엑트 빌드 파일 복사
 # COPY --from=build /app/build .
 # Copy the built React app from the build stage to the Nginx HTML directory
