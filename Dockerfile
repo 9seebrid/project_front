@@ -27,7 +27,7 @@ WORKDIR /usr/share/nginx/html
 # nginx 디렉토리에 리엑트 빌드 파일 복사
 # COPY --from=build /app/build .
 # Copy the built React app from the build stage to the Nginx HTML directory
-COPY --from=build /app/build /www/html/project_deploy/front
+COPY --from=build /app/build /usr/share/nginx/html
 
 
 # Copy the Nginx configuration file
