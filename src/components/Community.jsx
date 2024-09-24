@@ -28,7 +28,7 @@ const Community = () => {
       >
         <div className="community-contents">
           <div className="contents-header">
-            <h2>공지사항 입니다.</h2>
+            <h2>공지사항 페이지</h2>
           </div>
           <div className="contents-body">
             <div className="contents-container">
