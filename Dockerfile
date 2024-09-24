@@ -22,7 +22,7 @@ RUN npm run build
 FROM nginx:1.23-alpine
 
 # nginx default 접근 파일 설정
-WORKDIR /usr/share/nginx/html
+WORKDIR /www/html/project_deploy/front/build
 
 # nginx 디렉토리에 리엑트 빌드 파일 복사
 # COPY --from=build /app/build .
