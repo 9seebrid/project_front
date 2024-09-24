@@ -21,9 +21,6 @@ RUN npm run build
 # nginx 이미지
 FROM nginx:1.23-alpine
 
-# nginx default 접근 파일 설정
-WORKDIR /www/html/project_deploy/front/build
-
 # nginx 디렉토리에 리엑트 빌드 파일 복사
 # COPY --from=build /app/build .
 # Copy the built React app from the build stage to the Nginx HTML directory
