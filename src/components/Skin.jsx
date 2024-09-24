@@ -140,7 +140,7 @@ const Skin = () => {
                 btnClick2();
               }}
             >
-              민감건성
+              민감건성1
             </button>
           ) : (
             <button
