@@ -1,35 +1,36 @@
-# Referrence: https://synuns.tistory.com/75
-name: CICD
+name: Build and Deploy React App with Docker
 
+# 트리거: main 브랜치에 푸시될 때
 on:
   push:
     branches:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Sign in to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build Docker Image
-        run: docker build -t koobonse/whipped-front .
-      - name: Push Docker Image
-        run: docker push koobonse/whipped-front:latest
-
   deploy:
-    needs: build
-    runs-on: linode
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Pull image from docker hub
-        run: docker pull koobonse/whipped-front:latest
-      - name: Delete existing container
-        run: docker rm -f reactContainer
-      - name: Delete prune
-        run: docker system prune -a --force
-      - name: Run container
-        run: docker run -d -p 3000:80 --name reactContainer koobonse/whipped-front
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} # GitHub Secrets에 SSH 키를 저장해야 함
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no koo@9seebird.site << 'EOF'
+            # 작업 디렉토리로 이동
+            cd /www/html/project_deploy/front || exit
+            
+            # 최신 코드 가져오기
+            git pull origin main || git clone https://github.com/9seebrid/project_front.git .
+
+            # Docker 이미지 빌드 및 실행
+            docker build -t your-docker-image .
+            docker stop your-container || true  # 기존 컨테이너가 있으면 중지
+            docker rm your-container || true    # 기존 컨테이너가 있으면 삭제
+            docker run -d -p 3000:80 --name React-Project project-front
+          EOF
