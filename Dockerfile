@@ -33,7 +33,7 @@ COPY --from=build /app/build /usr/share/nginx/html
 # Copy the Nginx configuration file
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY ./whipped.9seebird.site /etc/nginx/sites-available/whipped.9seebird.site
+# COPY ./whipped.9seebird.site /etc/nginx/sites-available/whipped.9seebird.site
 
 # nginx 포트 설정
 EXPOSE 80
