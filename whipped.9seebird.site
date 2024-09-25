@@ -1,0 +1,64 @@
+upstream homepage_was {
+ip_hash;
+server 127.0.0.1:3000;
+}
+
+server {
+  server_name whipped.9seebird.site;
+  index index.php index.html index.htm index.nginx-debian.html;
+ # root /www/html/project_deploy/front;
+  root /www/html/project_deploy/front/build/;
+
+  access_log  /www/html/project_deploy/front/access.log  combined; 
+  error_log  /www/html/project_deploy/front/error.log  notice;
+
+ location / {
+    proxy_pass http://homepage_was;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    try_files $uri / /index.html;
+  }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        log_not_found off;
+    }
+
+    # 정적 파일 제공 경로 설정 (CSS, JS 파일)
+    location /static/ {
+        alias /usr/share/nginx/html/static/;
+    }
+ 
+# A long browser cache lifetime can speed up repeat visits to your page
+  location ~* \.(jpg|jpeg|gif|png|webp|svg|woff|woff2|ttf|css|js|ico|xml)$ {
+       access_log        off;
+       log_not_found     off;
+       expires           360d;
+  }
+
+  # disable access to hidden files
+  location ~ /\.ht {
+      access_log off;
+      log_not_found off;
+      deny all;
+  }
+
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/whipped.9seebird.site/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/whipped.9seebird.site/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name whipped.9seebird.site;
+
+    return 301 https://whipped.9seebird.site$request_uri;
+}
