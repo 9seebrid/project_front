@@ -7,13 +7,13 @@ FROM node:alpine3.18 as build
 WORKDIR /app
 
 # 패키지 파일 현재 디렉토리에 복사
-COPY package.json .
+COPY package.json ./
 
 # 패키지 설치
 RUN npm install
 
 # 나머지 소스코드 복사
-COPY . .
+COPY . ./
 
 # 빌드
 RUN npm run build
