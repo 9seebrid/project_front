@@ -1,43 +1,35 @@
-name: Build and Deploy React App with Docker
+# Referrence: https://synuns.tistory.com/75
+name: CICD
 
-# 트리거: main 브랜치에 푸시될 때
 on:
   push:
     branches:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Sign in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker Image
+        run: docker build -t koobonse/whipped-front .
+      - name: Push Docker Image
+        run: docker push koobonse/whipped-front:latest
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} # GitHub Secrets에 SSH 키를 저장해야 함
-
-      - name: Deploy to server
-        run: |
-          ssh -o StrictHostKeyChecking=no koo@9seebird.site << 'EOF'
-
-            # 작업 디렉토리로 이동
-            cd /www/html/project_deploy/ || exit
-
-            # 최신 코드 가져오기
-            # git pull origin main || git clone https://github.com/9seebrid/project_front.git .
-            # HTTPS 대신 SSH를 사용하여 GitHub 리포지토리 클론/풀
-            # git pull 9seebird@github.com:9seebrid/project_front.git || git clone 9seebird@github.com:9seebrid/project_front.git .
-              git clone https://github.com/9seebrid/project_front.git /www/html/project_deploy/
-
-            # 작업 디렉토리로 이동
-            cd /www/html/project_deploy/project_front || exit
-
-            # Docker 이미지 빌드 및 실행
-            docker build -t project-front .
-            docker stop project_front || true  # 기존 컨테이너가 있으면 중지
-            docker rm docker project_front || true    # 기존 컨테이너가 있으면 삭제
-            docker run -d -p 3000:80 --name React-Project project-front
-          EOF
+      - name: Delete Docker Image Cache
+        run: docker system prune -a -f
+      - name: Pull image from docker hub
+        run: docker pull koobonse/whipped-front:latest
+      - name: Delete existing container
+        run: docker rm -f reactContainer
+      - name: Run container
+        run: docker run -d -p 3000:80 --name reactContainer koobonse/whipped-front
