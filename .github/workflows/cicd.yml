@@ -32,10 +32,10 @@ jobs:
             else
               git clone git@github.com:9seebrid/project_front.git .
             fi
-            
+
             # Docker 이미지 빌드 및 실행
             docker build -t project-front .
-            docker stop $(docker ps -a -q) || true  # 기존 컨테이너가 있으면 중지
-            docker rm docker $(docker ps -a -q) || true    # 기존 컨테이너가 있으면 삭제
+            docker stop project_front || true  # 기존 컨테이너가 있으면 중지
+            docker rm docker project_front || true    # 기존 컨테이너가 있으면 삭제
             docker run -d -p 3000:80 --name React-Project project-front
           EOF
