@@ -29,7 +29,8 @@ jobs:
             # 최신 코드 가져오기
             # git pull origin main || git clone https://github.com/9seebrid/project_front.git .
             # HTTPS 대신 SSH를 사용하여 GitHub 리포지토리 클론/풀
-            git pull 9seebird@github.com:9seebrid/project_front.git || git clone 9seebird@github.com:9seebrid/project_front.git .
+            # git pull 9seebird@github.com:9seebrid/project_front.git || git clone 9seebird@github.com:9seebrid/project_front.git .
+              git clone https://github.com/9seebrid/project_front.git .
 
             # 작업 디렉토리로 이동
             cd /www/html/project_deploy/project_front || exit
