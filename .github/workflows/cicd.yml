@@ -31,6 +31,9 @@ jobs:
             # HTTPS 대신 SSH를 사용하여 GitHub 리포지토리 클론/풀
             git pull 9seebird@github.com:9seebrid/project_front.git || git clone 9seebird@github.com:9seebrid/project_front.git .
 
+            # 작업 디렉토리로 이동
+            cd /www/html/project_deploy/project_front || exit
+
             # Docker 이미지 빌드 및 실행
             docker build -t project-front .
             docker stop project_front || true  # 기존 컨테이너가 있으면 중지
